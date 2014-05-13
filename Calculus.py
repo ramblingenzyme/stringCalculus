@@ -3,7 +3,7 @@
 
 
 def Diff(formula):
-
+    formula = formula.replace(' ','')
     if '\\' in formula: #applies quotient rule
         formula = formula.split('\\')
 
@@ -11,24 +11,26 @@ def Diff(formula):
         vu = '{0}*{1}'.format(formula[1], Diff(formula[0]))
         uv = '{0}*{1}'.format(formula[0], Diff(formula[1]))
 
-        if formula[1].find('x') == -1:
+        if formula[1].find('x') == -1: #squares the denominator if it is only an integer
             return '{0}-{1}\{2}'.format(Multiply(vu), Multiply(uv), int(formula[1]) **2)
         return '{0}-{1}\({2})^2'.format(Multiply(vu), Multiply(uv), formula[1])
     
     elif ')(' in formula: #applies the product rule
         formula = formula.lstrip('(').rstrip(')').split(')(')
-
+        #formats the two parts of the product rule
         vu = '{0}*{1}'.format(formula[1], Diff(formula[0]))
         uv = '{0}*{1}'.format(formula[0], Diff(formula[1]))
-        print vu, uv
+        
         return '{0}+{1}'.format(Multiply(vu), Multiply(uv))
 
-        elif formula.find('(') > 0:
-            if Diff(formula[:formula.find('(')]) != '0':
-                retPower = (formula[formula.find(')^') + 2 : ])
-                retCoeff = '{0}*{1}'.format(Diff(formula[:formula.find('(')]), retPower)
-                return '{0}({1})({2})^{3}'.format(Multiply(retCoeff), Diff(bracketSlice), bracketSlice, int(retPower) - 1)
+    elif ')^' in formula: #semibroken attempt at chain rule, need to add more advanced problem types
+        bracketSlice = formula[formula.find('(') + 1 : formula.find(')')]
+        if formula.find('(') == 0:
+            strPower = (formula[formula.find(')^') + 2 : ])
+            strCoeff = strPower + '*' + Diff(bracketSlice)
+            return '{0}({1})^{2}'.format(Multiply(strCoeff), bracketSlice, int(strPower) -1)
 
+    #DUE FOR REWRITE AT SOME POINT, could be more elegant
     elif '+' in formula or '-' in formula: #handles more than one operand
         output = list()
         divider = '-'
@@ -36,7 +38,7 @@ def Diff(formula):
         #splits up the input by the operands of the input
         if '+' in formula:
             divider = '+'
-        formula = formula.replace(' ', '').split(divider.strip())
+        formula = formula.split(divider)
         print formula
         for i in range(len(formula)):
             if Power(formula[i]) == 1:
@@ -46,7 +48,6 @@ def Diff(formula):
                 pass
             else:
                 output.append(Diff(formula[i]))
-            print output
  
         return divider.join(output)
 
@@ -59,6 +60,7 @@ def Diff(formula):
     else: #handles general form
         return '{0}x^{1}'.format(Coefficient(formula) * Power(formula), Power(formula) -1)
 
+#NEED TO ADD LOGIC FOR CHAIN RULE
 def Multiply(formula): #only can handle two strings being multiplied together.
     formula = formula.replace(' ', '')
 
