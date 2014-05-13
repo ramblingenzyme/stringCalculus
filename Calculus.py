@@ -23,14 +23,6 @@ def Diff(formula):
         print vu, uv
         return '{0}+{1}'.format(Multiply(vu), Multiply(uv))
 
-    elif ')^' in formula: 
-        bracketSlice = formula[formula.find('(') + 1 : formula.find(')')]
-        if formula.find('(') == 0:
-            strPower = (formula[formula.find(')^') + 2 : ])
-            strCoeff = strPower + '*' + Diff(bracketSlice)
-            print strCoeff
-            return '{0}({1})^{2}'.format(Multiply(strCoeff), bracketSlice, int(strPower) -1)
-
         elif formula.find('(') > 0:
             if Diff(formula[:formula.find('(')]) != '0':
                 retPower = (formula[formula.find(')^') + 2 : ])
